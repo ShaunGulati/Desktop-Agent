@@ -1,0 +1,36 @@
+{
+  "name": "capri",
+  "version": "0.1.0",
+  "description": "CAPRI: a desktop pet agent that sees your screen and acts on it",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "tauri": "tauri",
+    "test": "vitest run",
+    "verify:web": "pnpm check && pnpm test",
+    "verify:swift": "swift test --package-path swift/CapriBridge",
+    "verify:rust": "cd src-tauri && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test",
+    "verify": "pnpm verify:web && pnpm verify:swift && pnpm verify:rust"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@tauri-apps/api": "^2"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.10",
+    "@sveltejs/kit": "^2.65.1",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@tauri-apps/cli": "^2",
+    "svelte": "^5.56.3",
+    "svelte-check": "^4.6.0",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16",
+    "vitest": "5.0.5"
+  },
+  "packageManager": "pnpm@12.4.1"
+}

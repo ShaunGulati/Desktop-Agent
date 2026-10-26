@@ -1,0 +1,50 @@
+{
+  "name": "Default blob",
+  "frame": {
+    "width": 64,
+    "height": 64
+  },
+  "scale": "pixelated",
+  "states": {
+    "idle": {
+      "frames": 8,
+      "fps": 6,
+      "loop": true
+    },
+    "listening": {
+      "frames": 4,
+      "fps": 8,
+      "loop": true
+    },
+    "thinking": {
+      "frames": 6,
+      "fps": 8,
+      "loop": true
+    },
+    "talking": {
+      "frames": 4,
+      "fps": 10,
+      "loop": true
+    },
+    "working": {
+      "frames": 8,
+      "fps": 12,
+      "loop": true
+    },
+    "waiting": {
+      "frames": 4,
+      "fps": 4,
+      "loop": true
+    },
+    "sleeping": {
+      "frames": 4,
+      "fps": 3,
+      "loop": true
+    },
+    "error": {
+      "frames": 2,
+      "fps": 4,
+      "loop": true
+    }
+  }
+}
