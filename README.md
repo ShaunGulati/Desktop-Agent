@@ -86,6 +86,10 @@ pnpm tauri build --bundles app
 open src-tauri/target/release/bundle/macos/CAPRI.app
 ```
 
+CAPRI is a menu-bar app by design: it has no Dock icon or app-switcher entry, because
+macOS only lets accessory apps float reliably over other apps' full-screen Spaces. Use the
+CAPRI icon in the menu bar or `⌥ Space`. Right-click animation preview is dev-only.
+
 The release build is optimized (LTO) and takes a couple of minutes; the bundle is about 4 MB.
 It is not code-signed yet, so to run it outside this machine you will need to allow it in
 System Settings → Privacy & Security.
