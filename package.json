@@ -1,7 +1,7 @@
 {
   "name": "capri",
   "version": "0.1.0",
-  "description": "",
+  "description": "CAPRI: a desktop pet agent that sees your screen and acts on it",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -11,7 +11,11 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "tauri": "tauri",
-    "test": "vitest run"
+    "test": "vitest run",
+    "verify:web": "pnpm check && pnpm test",
+    "verify:swift": "swift test --package-path swift/CapriBridge",
+    "verify:rust": "cd src-tauri && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test",
+    "verify": "pnpm verify:web && pnpm verify:swift && pnpm verify:rust"
   },
   "license": "MIT",
   "dependencies": {
@@ -27,5 +31,6 @@
     "typescript": "~6.0.3",
     "vite": "^8.0.16",
     "vitest": "5.0.5"
-  }
+  },
+  "packageManager": "pnpm@12.4.1"
 }
