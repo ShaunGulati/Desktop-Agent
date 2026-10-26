@@ -9,16 +9,58 @@ bridge, the skin system, tests and CI. No model or agent features yet.
 
 ## Requirements
 
-- macOS 13 or later on Apple Silicon
-- Xcode 16 or later (Swift 6 toolchain)
-- Rust (stable), Node.js 22, pnpm
+| Tool | Version | Why |
+| --- | --- | --- |
+| macOS on Apple Silicon | 13 or later | CAPRI is macOS-only for now |
+| Xcode | 16 or later (Swift 6) | Builds the `CapriBridge` Swift package |
+| Rust | stable | The Tauri core |
+| Node.js | 22 | Builds the Svelte UI |
+| pnpm | 12 (pinned in `package.json`) | Package manager |
 
-## Run it
+Models, Docker and mlx-lm are not needed yet; they arrive in later milestones.
+
+## Set up (first time)
+
+1. **Xcode.** Install it from the App Store, then point the command-line tools at it and
+   accept the license:
+
+   ```sh
+   sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+   sudo xcodebuild -license accept
+   swift --version   # should report Swift 6.x
+   ```
+
+2. **Rust:**
+
+   ```sh
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
+
+3. **Node.js 22 and pnpm** (with [nvm](https://github.com/nvm-sh/nvm); Homebrew works too):
+
+   ```sh
+   nvm install 22
+   corepack enable   # provides the pnpm version pinned in package.json
+   ```
+
+4. **Clone and install dependencies:**
+
+   ```sh
+   git clone <repo-url> CAPRI
+   cd CAPRI
+   pnpm install
+   ```
+
+## Run it (development)
 
 ```sh
-pnpm install
 pnpm tauri dev
 ```
+
+This starts the Vite dev server on port 1420, builds the Swift bridge and the Rust core, and
+launches the app. The first run compiles every dependency and takes a few minutes; later runs
+take seconds. Svelte changes reload instantly, and Rust changes trigger a rebuild and
+relaunch. Stop it with `Ctrl+C` in the terminal.
 
 The pet appears in the bottom-right corner of your screen.
 
@@ -30,7 +72,34 @@ The pet appears in the bottom-right corner of your screen.
 | Quit | CAPRI menu-bar icon → Quit CAPRI |
 
 CAPRI runs as an accessory app, so it has no Dock icon. The terminal running `pnpm tauri dev`
-logs the hotkey-to-first-paint latency for each show, measured against the 100 ms M0 budget.
+logs the hotkey-to-first-paint latency for each show, measured against the 100 ms M0 budget:
+
+```
+[capri] Swift bridge ready (ABI 1); frontmost app: Safari
+[capri] hotkey to first paint: 18.4 ms (within 100 ms budget)
+```
+
+## Build the app
+
+```sh
+pnpm tauri build --bundles app
+open src-tauri/target/release/bundle/macos/CAPRI.app
+```
+
+The release build is optimized (LTO) and takes a couple of minutes; the bundle is about 4 MB.
+It is not code-signed yet, so to run it outside this machine you will need to allow it in
+System Settings → Privacy & Security.
+
+## Troubleshooting
+
+| Problem | Fix |
+| --- | --- |
+| `Port 1420 is already in use` | Another dev server is still running: `lsof -ti :1420 \| xargs kill` |
+| The app exits at launch with a global shortcut error | Another app (Raycast, ChatGPT, Alfred) already owns `⌥ Space`; free it there, or change `TOGGLE_PET_SHORTCUT` in `src-tauri/src/lib.rs` |
+| `Library not loaded: @rpath/libswift_…` | Run from a clean build: `cd src-tauri && cargo clean`, then `pnpm tauri dev` |
+| Swift build errors mentioning the toolchain | Check `xcode-select -p` points at Xcode (not only the Command Line Tools) and `swift --version` is 6.x |
+| `CapriBridge ABI mismatch` | The Swift library is stale: `cd src-tauri && cargo clean`, then rebuild |
+| The pet doesn't cover a full-screen app | Look for a `[capri]` error about the native window in the terminal and report it |
 
 ## Test it
 
